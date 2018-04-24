@@ -1,0 +1,42 @@
+#:kivy 1.10.0
+#:import app kivy.app
+
+
+<Morseus>:
+    cols: 1
+
+    canvas:
+        Color:
+            rgb: 0.2, 0.2, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    TabbedPanel:
+        do_default_tab: False
+
+        TabbedPanelItem:
+            text: "Receive"
+
+            GridLayout:
+                cols: 1
+
+                TextInput:
+                    id: text_output
+                    readonly: True
+
+        TabbedPanelItem:
+            text: "Send"
+
+            GridLayout:
+                cols: 1
+
+                TextInput:
+                    id: text_input
+
+                Button:
+                    text: "Start"
+
+    Button:
+        text: "Exit"
+        on_release: app.App.get_running_app().stop()
