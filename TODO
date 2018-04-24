@@ -1,0 +1,5 @@
+- create interface
+- add camera support
+- normalize and process captures
+- find the main source of light
+- interpret light's signals into digital quanta
