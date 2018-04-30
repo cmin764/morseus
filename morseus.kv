@@ -21,7 +21,13 @@
             GridLayout:
                 cols: 1
 
+                MorseusCamera:
+                    id: camera_output
+                    play: True
+                    resolution: 120, 90
+
                 TextInput:
+                    size_hint: 0.4, 0.4
                     id: text_output
                     readonly: True
 
@@ -31,12 +37,22 @@
             GridLayout:
                 cols: 1
 
+                Widget:
+                    canvas:
+                        Color:
+                            rgb: 1, 1, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
                 TextInput:
                     id: text_input
 
                 Button:
+                    size_hint: 0.4, 0.4
                     text: "Start"
 
     Button:
+        size_hint: 0.2, 0.2
         text: "Exit"
         on_release: app.App.get_running_app().stop()

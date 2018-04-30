@@ -1,6 +1,9 @@
+#! /usr/bin/env python
+
+
 from kivy.app import App
 
-from morseus.nui import Morseus
+from morseus import Morseus
 
 
 class MorseusApp(App):
