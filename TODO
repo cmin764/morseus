@@ -3,3 +3,5 @@
 - normalize and process captures
 - find the main source of light
 - interpret light's signals into digital quanta
+- identify and use bounding box inside the sub-area
+- adapt mono threshold according to day/night environment
