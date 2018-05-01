@@ -1,15 +1,12 @@
 #! /usr/bin/env python
 
 
-from kivy.app import App
-
 from morseus import Morseus
 
 
-class MorseusApp(App):
+class MorseusApp(Morseus):
 
-    def build(self):
-        return Morseus()
+    pass
 
 
 if __name__ == "__main__":

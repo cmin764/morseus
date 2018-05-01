@@ -4,13 +4,15 @@
 from libmorse import UNIT
 
 
-# Camera image processing options.
-SECOND = 1000.0    # how much is a second in in ms
+# Camera image and color processing options.
+SECOND = 1000.0    # how much is a second in ms
 UNIT = float(UNIT)    # default morse unit (explicit declare)
+MONO_THRESHOLD = 200    # pixels above this are considered white
+LIGHT_DARK_RATIO = 2.0    # minimum light vs. dark quantity in an image
 
 # Sub-area of interest within the whole capture.
 class AREA:
-    # How smaller is it.
+    # How smaller is comparing to original.
     RATIO = 0.2
     # Minimum and maximum width for a sub-area.
     class WIDTH:

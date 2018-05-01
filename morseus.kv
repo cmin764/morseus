@@ -1,8 +1,7 @@
 #:kivy 1.10.0
-#:import app kivy.app
 
 
-<Morseus>:
+<MorseusLayout>:
     cols: 1
 
     canvas:
@@ -58,4 +57,4 @@
     Button:
         size_hint: 0.2, 0.2
         text: "Exit"
-        on_release: app.App.get_running_app().stop()
+        on_release: app.stop()

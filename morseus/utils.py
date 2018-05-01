@@ -1,7 +1,14 @@
 """Morseus common utilities that may be subject to the entire project."""
 
 
+from kivy.app import App
+
 from morseus import settings
+
+
+get_app = lambda: App.get_running_app()
+
+get_root = lambda: get_app().root
 
 
 def calc_morse_fps():
