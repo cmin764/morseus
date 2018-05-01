@@ -29,6 +29,7 @@
                 TextInput:
                     size_hint: 0.4, 0.4
                     id: text_output
+                    background_color: 0.8, 0.8, 0.8, 1
                     readonly: True
 
         TabbedPanelItem:
@@ -40,13 +41,15 @@
                 Widget:
                     canvas:
                         Color:
-                            rgb: 1, 1, 1
+                            rgb: 0, 0, 0
                         Rectangle:
                             pos: self.pos
                             size: self.size
 
                 TextInput:
                     id: text_input
+                    background_color: 0.8, 0.8, 0.8, 1
+                    hint_text: "Your text here..."
 
                 Button:
                     size_hint: 0.4, 0.4
