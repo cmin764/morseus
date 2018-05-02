@@ -2,6 +2,10 @@
 
 
 import collections
+import threading
+from Queue import Queue
+
+import libmorse
 
 from morseus import settings
 
@@ -20,8 +24,12 @@ class Decoder(object):
     def __init__(self):
         # For identifying activity by absence of long silences.
         self._last_signals = collections.deque(maxlen=self.MAX_SIGNALS)
+        self._translate = libmorse.translate_morse()
+        self._translate.next()    # initialize translator coroutine
+        self._translate_lock = threading.Lock()
+        self._letters_queue = Queue()
 
-    def add_image(self, image, delta):
+    def add_image(self, image, delta, last_thread):
         """Add or discard new capture for analysing."""
         # Convert to monochrome.
         mono_func = lambda pixel: pixel > self.MONO_THRESHOLD and 255
@@ -37,4 +45,19 @@ class Decoder(object):
         else:
             signal = True
 
-        print(signal, delta)
+        item = (signal, delta * settings.SECOND)
+        if last_thread:
+            last_thread.join()
+        with self._translate_lock:    # isn't necessary, but paranoia reasons
+            letters = self._translate.send(item)[1]
+            if letters:
+                self._letters_queue.put(letters)
+                self._letters_queue.task_done()
+
+    def get_letters(self):
+        """Retrieve all present letters in the queue as as string."""
+        all_letters = []
+        while not self._letters_queue.empty():
+            letters = self._letters_queue.get()
+            all_letters.extend(letters)
+        return "".join(all_letters)

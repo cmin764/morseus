@@ -14,5 +14,5 @@ get_root = lambda: get_app().root
 def calc_morse_fps():
     """Returns camera capturing desired frame rate."""
     fps = settings.SECOND / settings.UNIT
-    # Double the amount in order to be more permissive with the fluctuations.
-    return int(2 * fps)
+    # Tweak the amount in order to be more permissive with the fluctuations.
+    return min(int(settings.FPS_FACTOR * fps), settings.MAX_FPS)

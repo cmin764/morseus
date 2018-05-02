@@ -1,6 +1,8 @@
+- add clear button
+- detect long sleeps (and pause camera; begin at first light)
 - identify and use bounding box inside the sub-area
 - adapt mono threshold according to day/night environment
 - add morse send support and flashes
-- add settings tab (subarea, adaptive (unit speed) etc.)
+- add settings tab (subarea, adaptive (unit speed), debugging logs etc.)
 - add camera support for android (and android deployment)
 - add documentation: rst -> lex -> pdf

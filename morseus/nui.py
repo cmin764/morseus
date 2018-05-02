@@ -8,9 +8,14 @@ from PIL import Image
 from kivy.clock import Clock
 from kivy.uix.camera import Camera
 from kivy.uix.gridlayout import GridLayout
+from kivy.properties import StringProperty
 from kivy.uix.tabbedpanel import TabbedPanelItem
 
 from morseus import process, settings, utils
+
+
+_MORSE_FPS = utils.calc_morse_fps()
+MORSE_PERIOD = 1.0 / _MORSE_FPS
 
 
 class WidgetMixin(object):
@@ -41,25 +46,34 @@ class MorseusLayout(GridLayout):
 
     TEXTURE_MODE = "RGBA"
 
+    output_text = StringProperty()
+
     def __init__(self, *args, **kwargs):
         super(MorseusLayout, self).__init__(*args, **kwargs)
         self._decoder = process.Decoder()
+        self._last_thread = None
+
+        Clock.schedule_interval(self._update_output_text, MORSE_PERIOD)
+
+    def _update_output_text(self, *_):
+        text = self._decoder.get_letters()
+        self.output_text += text
 
     def add_region(self, region, delta):
         """Add new capture of interest to the analyser."""
         image = Image.frombytes(self.TEXTURE_MODE, region.size, region.pixels)
         thread = threading.Thread(
             target=self._decoder.add_image,
-            args=(image, delta)
+            args=(image, delta),
+            kwargs={"last_thread": self._last_thread}
         )
         thread.start()
+        self._last_thread = thread
 
 
 class MorseusCamera(Camera, WidgetMixin):
 
     """Define custom camera actions and settings."""
-
-    MORSE_FPS = utils.calc_morse_fps()
 
     _AREA = settings.AREA
     CENTER_RATIO = _AREA.RATIO
@@ -109,9 +123,8 @@ class MorseusCamera(Camera, WidgetMixin):
         ret = super(MorseusCamera, self).on_texture(*args, **kwargs)
 
         if not self._capture_event:
-            period = 1.0 / self.MORSE_FPS
             self._capture_event = Clock.schedule_interval(
-                self.capture, period)
+                self.capture, MORSE_PERIOD)
 
         return ret
 
