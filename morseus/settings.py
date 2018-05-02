@@ -4,7 +4,7 @@
 from libmorse import UNIT
 
 
-# Camera image and color processing options.
+# Basic camera image and color processing options.
 SECOND = 1000.0    # how much is a second in ms
 UNIT = float(UNIT)    # default morse unit (explicit declare)
 MONO_THRESHOLD = 200    # pixels above this are considered white
@@ -20,3 +20,14 @@ class AREA:
     class WIDTH:
         MIN = 100.0
         MAX = 200.0
+
+# Choose from different camera providers.
+class CAMERA_PROVIDERS:
+    AVFOUNDATION = "avfoundation"
+    ANDROID = "android"
+    PICAMERA = "picamera"
+    GI = "gi"
+    OPENCV = "opencv"
+
+    ENABLE = True
+    EXPLICIT = GI
