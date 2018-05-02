@@ -14,24 +14,25 @@
     TabbedPanel:
         do_default_tab: False
 
-        TabbedPanelItem:
+        MorseusTab:
+            id: receive_tab
             text: "Receive"
 
             GridLayout:
                 cols: 1
 
                 MorseusCamera:
-                    id: camera_output
+                    id: morseus_camera
                     play: True
                     resolution: 120, 90
 
                 TextInput:
                     size_hint: 0.4, 0.4
-                    id: text_output
                     background_color: 0.8, 0.8, 0.8, 1
                     readonly: True
 
-        TabbedPanelItem:
+        MorseusTab:
+            id: send_tab
             text: "Send"
 
             GridLayout:
@@ -46,7 +47,6 @@
                             size: self.size
 
                 TextInput:
-                    id: text_input
                     background_color: 0.8, 0.8, 0.8, 1
                     hint_text: "Your text here..."
 

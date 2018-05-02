@@ -1,7 +1,6 @@
-- create interface
-- add camera support
-- normalize and process captures
-- find the main source of light
-- interpret light's signals into digital quanta
 - identify and use bounding box inside the sub-area
 - adapt mono threshold according to day/night environment
+- add morse send support and flashes
+- add settings tab (subarea, adaptive (unit speed) etc.)
+- add camera support for android (and android deployment)
+- add documentation: rst -> lex -> pdf

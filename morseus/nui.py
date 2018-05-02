@@ -2,11 +2,13 @@
 
 
 import itertools
+import threading
 
 from PIL import Image
 from kivy.clock import Clock
 from kivy.uix.camera import Camera
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.tabbedpanel import TabbedPanelItem
 
 from morseus import process, settings, utils
 
@@ -33,6 +35,26 @@ class WidgetMixin(object):
         return self._root
 
 
+class MorseusLayout(GridLayout):
+
+    """Morseus root widget holding the entire NUI."""
+
+    TEXTURE_MODE = "RGBA"
+
+    def __init__(self, *args, **kwargs):
+        super(MorseusLayout, self).__init__(*args, **kwargs)
+        self._decoder = process.Decoder()
+
+    def add_region(self, region, delta):
+        """Add new capture of interest to the analyser."""
+        image = Image.frombytes(self.TEXTURE_MODE, region.size, region.pixels)
+        thread = threading.Thread(
+            target=self._decoder.add_image,
+            args=(image, delta)
+        )
+        thread.start()
+
+
 class MorseusCamera(Camera, WidgetMixin):
 
     """Define custom camera actions and settings."""
@@ -42,8 +64,6 @@ class MorseusCamera(Camera, WidgetMixin):
     _AREA = settings.AREA
     CENTER_RATIO = _AREA.RATIO
     CENTER_WIDTH = _AREA.WIDTH
-
-    TEXTURE_MODE = "RGBA"
 
     def __init__(self, *args, **kwargs):
         super(MorseusCamera, self).__init__(*args, **kwargs)
@@ -72,6 +92,9 @@ class MorseusCamera(Camera, WidgetMixin):
 
     def capture(self, delta, *_):
         """Capture the current screen and further process the image."""
+        if not self.play:
+            return
+
         if not self._center_region:
             tex = self.texture
             point, size = self.get_center_metrics(tex.size)
@@ -79,9 +102,7 @@ class MorseusCamera(Camera, WidgetMixin):
             self._center_region = tex.get_region(*region_args)
 
         # Load and further process region as PIL image.
-        region = self._center_region
-        image = Image.frombytes(self.TEXTURE_MODE, region.size, region.pixels)
-        self.root.add_image(image, delta)
+        self.root.add_region(self._center_region, delta)
 
     def on_texture(self, *args, **kwargs):
         """Callback for texture loading (usually happens once)."""
@@ -95,14 +116,14 @@ class MorseusCamera(Camera, WidgetMixin):
         return ret
 
 
-class MorseusLayout(GridLayout):
+class MorseusTab(TabbedPanelItem, WidgetMixin):
 
-    """Morseus root widget holding the entire NUI."""
+    """Custom notebook tabs."""
 
-    def __init__(self, *args, **kwargs):
-        super(MorseusLayout, self).__init__(*args, **kwargs)
-        self._decoder = process.Decoder()
+    def on_touch_down(self, touch, *args, **kwargs):
+        if self.collide_point(*touch.pos):
+            root = self.root
+            play = self == root.ids.receive_tab
+            root.ids.morseus_camera.play = play
 
-    def add_image(self, image, delta):
-        """Add new capture of interest to the analyser."""
-        self._decoder.add_image(image, delta)
+        return super(MorseusTab, self).on_touch_down(touch, *args, **kwargs)
