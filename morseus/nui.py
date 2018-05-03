@@ -7,7 +7,11 @@ from PIL import Image
 from kivy.clock import Clock
 from kivy.uix.camera import Camera
 from kivy.uix.gridlayout import GridLayout
-from kivy.properties import StringProperty
+from kivy.uix.textinput import TextInput
+from kivy.properties import (
+    ListProperty,
+    StringProperty,
+)
 from kivy.uix.tabbedpanel import TabbedPanelItem
 
 from morseus import process, settings, utils
@@ -37,6 +41,14 @@ class WidgetMixin(object):
         if not self._root:
             self._root = utils.get_root()
         return self._root
+
+
+class CapitalTextInput(TextInput):
+
+    def insert_text(self, string, *args, **kwargs):
+        return super(CapitalTextInput, self).insert_text(
+            string.upper(), *args, **kwargs
+        )
 
 
 class MorseusLayout(GridLayout):
@@ -85,30 +97,37 @@ class MorseusCamera(Camera, WidgetMixin):
     CENTER_RATIO = _AREA.RATIO
     CENTER_WIDTH = _AREA.WIDTH
 
+    # Focus rectangle dimensions.
+    center_pos = ListProperty([0, 0])
+    center_size = ListProperty([0, 0])
+
     def __init__(self, *args, **kwargs):
         super(MorseusCamera, self).__init__(*args, **kwargs)
         self._capture_event = None
         self._center_region = None
+        self._center_metrics = None
 
-    @classmethod
-    def get_center_metrics(cls, size):
+    def get_center_metrics(self, size):
         """Returns a centered rectangular sub-shape of the given `size`."""
-        # Normalize size, then compute aspect ratio and center of the image.
-        width, height = map(float, size)
-        aspect_ratio = width / height
-        center = width / 2, height / 2
+        if not self._center_metrics:
+            # Normalize size, then compute aspect ratio and center of the image.
+            width, height = map(float, size)
+            aspect_ratio = width / height
+            center = width / 2, height / 2
 
-        # Now compute the centered smaller sub-area.
-        subwidth = width * cls.CENTER_RATIO
-        subwidth = max(subwidth, cls.CENTER_WIDTH.MIN)
-        subwidth = min(subwidth, cls.CENTER_WIDTH.MAX)
-        subsize = (subwidth, subwidth / aspect_ratio)
+            # Now compute the centered smaller sub-area.
+            subwidth = width * self.CENTER_RATIO
+            subwidth = max(subwidth, self.CENTER_WIDTH.MIN)
+            subwidth = min(subwidth, self.CENTER_WIDTH.MAX)
+            subsize = (subwidth, subwidth / aspect_ratio)
 
-        # And finally the bottom-left origin point.
-        subpoint = map(lambda pos, length: pos - length / 2,
-                       center, subsize)
+            # And finally the bottom-left origin point.
+            subpoint = map(lambda pos, length: pos - length / 2,
+                           center, subsize)
 
-        return subpoint, subsize
+            self._center_metrics = (subpoint, subsize)
+
+        return self._center_metrics
 
     def capture(self, delta, *_):
         """Capture the current screen and further process the image."""
@@ -128,11 +147,31 @@ class MorseusCamera(Camera, WidgetMixin):
         """Callback for texture loading (usually happens once)."""
         ret = super(MorseusCamera, self).on_texture(*args, **kwargs)
 
+        # Start periodic capturing event.
         if not self._capture_event:
             self._capture_event = Clock.schedule_interval(
                 self.capture, MORSE_PERIOD)
 
+        # Mark the focus area for capturing.
+        self.update_center()
+
         return ret
+
+    def update_center(self):
+        """Update the visual center focus area for feedback."""
+        if not all(self.texture_size):
+            # Texture not initialized yet.
+            return
+
+        # Get focus coordinates.
+        point, size = self.get_center_metrics(self.texture_size)
+        # Transform `point` and `size` from texture to widget proportions.
+        point, size = utils.dim_transform(
+            self.texture_size, self.size, (point, size))
+        # Texture position is relative to its parent widget (Camera).
+        abs_point = map(sum, zip(self.pos, point))
+        self.center_pos = abs_point
+        self.center_size = size
 
 
 class MorseusTab(TabbedPanelItem, WidgetMixin):

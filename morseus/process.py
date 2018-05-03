@@ -60,6 +60,7 @@ class Decoder(object):
                 self._letters_queue.task_done()
 
     def add_image(self, *args, **kwargs):
+        """Threaded scaffold for adding images into processing."""
         kwargs["last_thread"] = self._last_thread
         thread = threading.Thread(
             target=self._add_image,

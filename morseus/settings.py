@@ -15,11 +15,11 @@ FPS_FACTOR = 3    # multiplied with the lowest computed FPS value
 # Sub-area of interest within the whole capture.
 class AREA:
     # How smaller is comparing to original.
-    RATIO = 0.2
+    RATIO = 1.0 / 3
     # Minimum and maximum width for a sub-area.
     class WIDTH:
         MIN = 100.0
-        MAX = 200.0
+        MAX = 500.0
 
 # Choose from different camera providers.
 class CAMERA_PROVIDERS:
