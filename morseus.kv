@@ -1,6 +1,12 @@
 #:kivy 1.10.0
 
 
+<MorseusText@TextInput>:
+    size_hint: 0.4, 0.4
+    background_color: 0.8, 0.8, 0.8, 1
+    font_size: "30sp"
+
+
 <MorseusLayout>:
     cols: 1
 
@@ -26,11 +32,14 @@
                     play: True
                     resolution: 640, 480
 
-                TextInput:
-                    size_hint: 0.4, 0.4
-                    background_color: 0.8, 0.8, 0.8, 1
+                MorseusText:
                     readonly: True
                     text: root.output_text
+
+                Button:
+                    size_hint: 0.3, 0.3
+                    text: "Reset"
+                    on_release: root.reset_receiver()
 
         MorseusTab:
             id: send_tab
@@ -47,12 +56,11 @@
                             pos: self.pos
                             size: self.size
 
-                TextInput:
-                    background_color: 0.8, 0.8, 0.8, 1
+                MorseusText:
                     hint_text: "Your text here..."
 
                 Button:
-                    size_hint: 0.4, 0.4
+                    size_hint: 0.3, 0.3
                     text: "Start"
 
     Button:

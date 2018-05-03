@@ -24,12 +24,17 @@ class Decoder(object):
     def __init__(self):
         # For identifying activity by absence of long silences.
         self._last_signals = collections.deque(maxlen=self.MAX_SIGNALS)
+        # Last created thread (waiting purposes).
+        self._last_thread = None
+        # Morse translator.
         self._translate = libmorse.translate_morse()
-        self._translate.next()    # initialize translator coroutine
+        # Initialize translator coroutine.
+        self._translator = self._translate.next()[0]
         self._translate_lock = threading.Lock()
+        # Output queue of string letters.
         self._letters_queue = Queue()
 
-    def add_image(self, image, delta, last_thread):
+    def _add_image(self, image, delta, last_thread):
         """Add or discard new capture for analysing."""
         # Convert to monochrome.
         mono_func = lambda pixel: pixel > self.MONO_THRESHOLD and 255
@@ -49,10 +54,20 @@ class Decoder(object):
         if last_thread:
             last_thread.join()
         with self._translate_lock:    # isn't necessary, but paranoia reasons
-            letters = self._translate.send(item)[1]
+            self._translator, letters = self._translate.send(item)
             if letters:
                 self._letters_queue.put(letters)
                 self._letters_queue.task_done()
+
+    def add_image(self, *args, **kwargs):
+        kwargs["last_thread"] = self._last_thread
+        thread = threading.Thread(
+            target=self._add_image,
+            args=args,
+            kwargs=kwargs
+        )
+        thread.start()
+        self._last_thread = thread
 
     def get_letters(self):
         """Retrieve all present letters in the queue as as string."""
@@ -61,3 +76,12 @@ class Decoder(object):
             letters = self._letters_queue.get()
             all_letters.extend(letters)
         return "".join(all_letters)
+
+    def close(self):
+        """Close the translator and free resources."""
+        # Wait for the last started thread to finish (and all before it).
+        if self._last_thread:
+            self._last_thread.join()
+        self._translator.wait()
+        self._translator.close()
+        self._last_signals.clear()

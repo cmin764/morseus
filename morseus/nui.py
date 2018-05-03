@@ -2,7 +2,6 @@
 
 
 import itertools
-import threading
 
 from PIL import Image
 from kivy.clock import Clock
@@ -51,7 +50,6 @@ class MorseusLayout(GridLayout):
     def __init__(self, *args, **kwargs):
         super(MorseusLayout, self).__init__(*args, **kwargs)
         self._decoder = process.Decoder()
-        self._last_thread = None
 
         Clock.schedule_interval(self._update_output_text, MORSE_PERIOD)
 
@@ -62,13 +60,21 @@ class MorseusLayout(GridLayout):
     def add_region(self, region, delta):
         """Add new capture of interest to the analyser."""
         image = Image.frombytes(self.TEXTURE_MODE, region.size, region.pixels)
-        thread = threading.Thread(
-            target=self._decoder.add_image,
-            args=(image, delta),
-            kwargs={"last_thread": self._last_thread}
-        )
-        thread.start()
-        self._last_thread = thread
+        self._decoder.add_image(image, delta)
+
+    def reset_receiver(self):
+        """Renew the state of the receiver."""
+        # First, stop the camera, in order to interrupt the feed.
+        camera = self.ids.morseus_camera
+        camera.play = False
+        # Now signal the decoder to finish.
+        self._decoder.close()
+        # Recreate the decoding objects.
+        self._decoder = process.Decoder()
+        # And finally clear received text so far.
+        self.output_text = ""
+        # Now turn on back the camera.
+        camera.play = True
 
 
 class MorseusCamera(Camera, WidgetMixin):
