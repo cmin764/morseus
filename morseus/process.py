@@ -2,6 +2,7 @@
 
 
 import collections
+import operator
 import threading
 from Queue import Queue
 
@@ -40,6 +41,19 @@ class Decoder(object):
         mono_func = lambda pixel: pixel > self.MONO_THRESHOLD and 255
         image = image.convert(mode=self.BW_MODE).point(
             mono_func, mode=self.MONO_MODE)
+        if settings.BOUNDING_BOX:
+            # Crop unnecessary void around the light object.
+            box = image.getbbox()
+            if box:
+                # Check if the new area isn't too small comparing to the
+                # original.
+                img_area = operator.mul(*image.size)
+                box_area = operator.mul(
+                    *map(lambda pair: abs(box[pair[0]] - box[pair[1]]),
+                         [(0, 2), (1, 3)])
+                )
+                if float(box_area) / img_area > settings.BOX_MIN_RATIO:
+                    image = image.crop(box=box)
 
         # Decide if there's light or dark.
         hist = image.histogram()

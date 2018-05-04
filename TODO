@@ -5,4 +5,5 @@
 - add morse send support and flashes
 - add settings tab (subarea, adaptive (unit speed), debugging logs etc.)
 - add camera support for android (and android deployment)
+- add logging to console (redirect libmorse to stdout instead of file)
 - add documentation: rst -> lex -> pdf

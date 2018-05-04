@@ -1,6 +1,8 @@
 """Morseus common utilities that may be subject to the entire project."""
 
 
+import itertools
+
 from kivy.app import App
 
 from morseus import settings
@@ -20,6 +22,9 @@ def calc_morse_fps():
 
 def dim_transform(first, second, transform):
     """Adapt `transform` dimensions following `first` to `second` rules."""
+    if not all(itertools.chain(first, second)):
+        return transform
+
     # Compute aspect ratios.
     first_ratio, second_ratio = map(lambda pair: pair[0] / pair[1],
                                     [first, second])
@@ -29,12 +34,15 @@ def dim_transform(first, second, transform):
     void = int(not fit)
     # Compute the co-ratio between two fits.
     coratio = first[fit] / second[fit]
+
     # Apply factors to current dimensions.
     adapt = lambda ent: map(lambda dim: ent[dim] / coratio, [0, 1])
     pos, size = map(adapt, transform)
+
     # Also compute and apply position correction.
     poscor = [0, 0]
     poscor[void] = (second[void] - first[void] / coratio) / 2
     pos = map(sum, zip(pos, poscor))
+
     # Return newly computed position and size.
     return pos, size
