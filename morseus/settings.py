@@ -13,7 +13,8 @@ FPS_FACTOR = 3    # multiplied with the lowest computed FPS value
 MONO_THRESHOLD = 250    # pixels above this are considered white
 LIGHT_DARK_RATIO = 1.0    # minimum light vs. dark quantity in an image
 BOUNDING_BOX = True    # crop empty areas when light is detected
-BOX_MIN_RATIO = 0.2    # minimum area ratio between box and source
+BOX_MIN_RATIO = 0.01    # minimum area ratio between box and source
+SPOT_NOISE_RATIO = 0.1    # maximum area ratio between any and the main spot
 
 # Sub-area of interest within the whole capture.
 class AREA:

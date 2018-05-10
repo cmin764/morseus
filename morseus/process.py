@@ -7,6 +7,8 @@ import threading
 from Queue import Queue
 
 import libmorse
+import numpy
+from PIL import ImageFilter
 
 from morseus import settings
 
@@ -35,12 +37,78 @@ class Decoder(object):
         # Output queue of string letters.
         self._letters_queue = Queue()
 
+    @staticmethod
+    def _flood_fill(image, node, seen):
+        """Find white spots and return their area."""
+        queue = collections.deque()
+        area = 0
+
+        def add_pos(pos):
+            # Check position and retrieve pixel.
+            width, height = image.size
+            valid = 0 <= pos[0] < width and 0 <= pos[1] < height
+            if not valid:
+                return False
+            pixel = image.getpixel(pos)
+            lin, col = pos
+            if not pixel or seen[lin, col]:
+                return False
+            # White pixel detected.
+            queue.append(pos)
+            seen[lin, col] = True
+            return True
+
+        area += add_pos(node)
+        moves = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        while queue:
+            node = queue.pop()
+            for move in moves:
+                adj = tuple(map(sum, zip(node, move)))
+                area += add_pos(adj)
+
+        return area
+
+    @classmethod
+    def _examine_circles(cls, image):
+        """Check if we have the usual spot & noise pattern."""
+        areas = []
+        width, height = image.size
+        # Generate the visiting matrix.
+        seen = numpy.zeros((width, height))
+        # Take each white not visited pixel and identify spot from it.
+        for xpix in range(width):
+            for ypix in range(height):
+                pixel = image.getpixel((xpix, ypix))
+                if not pixel or seen[xpix, ypix]:
+                    continue
+                # We've got a non-visited white pixel.
+                area = cls._flood_fill(image, (xpix, ypix), seen)
+                areas.append(area)
+        if not areas:
+            # No spots detected.
+            return False
+
+        # Now compare all the areas in order to check the pattern.
+        main_area = max(areas)
+        areas.remove(main_area)
+        noise = True    # rest of the spots are just noise
+        for area in areas:
+            ratio = float(area) / main_area
+            if ratio > settings.SPOT_NOISE_RATIO:
+                # Not noise anymore.
+                noise = False
+                break
+
+        # If we remain with the `noise`, then we have a recognized pattern.
+        return noise
+
     def _add_image(self, image, delta, last_thread):
         """Add or discard new capture for analysing."""
+        # Convert to black & white, then apply blur.
+        image = image.convert(mode=self.BW_MODE).filter(ImageFilter.BLUR)
         # Convert to monochrome.
         mono_func = lambda pixel: pixel > self.MONO_THRESHOLD and 255
-        image = image.convert(mode=self.BW_MODE).point(
-            mono_func, mode=self.MONO_MODE)
+        image = image.point(mono_func, mode=self.MONO_MODE)
         if settings.BOUNDING_BOX:
             # Crop unnecessary void around the light object.
             box = image.getbbox()
@@ -61,6 +129,8 @@ class Decoder(object):
         if blacks:
             light_dark = float(hist[-1]) / blacks
             signal = light_dark > self.LIGHT_DARK_RATIO
+            if not signal and light_dark:
+                signal = self._examine_circles(image)
         else:
             signal = True
 
