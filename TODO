@@ -1,4 +1,3 @@
-- test and fix time deltas for each signal part
 - adapt mono threshold according to day/night environment
 - detect long sleeps (and pause camera; begin at first light)
 - add morse send support and flashes

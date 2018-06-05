@@ -9,6 +9,7 @@ SECOND = 1000.0    # how much is a second in ms
 UNIT = float(UNIT)    # default morse unit (explicit declare)
 MAX_FPS = 30    # maximum number of frames per second supported
 FPS_FACTOR = 3    # multiplied with the lowest computed FPS value
+TIME_DELTA = False    # use own computed time difference
 
 MONO_THRESHOLD = 250    # pixels above this are considered white
 LIGHT_DARK_RATIO = 1.0    # minimum light vs. dark quantity in an image

@@ -2,6 +2,7 @@
 
 
 import itertools
+import time
 
 from PIL import Image
 from kivy.clock import Clock
@@ -106,6 +107,7 @@ class MorseusCamera(Camera, WidgetMixin):
         self._capture_event = None
         self._center_region = None
         self._center_metrics = None
+        self._last_time = None
 
     def get_center_metrics(self, size):
         """Returns a centered rectangular sub-shape of the given `size`."""
@@ -132,6 +134,7 @@ class MorseusCamera(Camera, WidgetMixin):
     def capture(self, delta, *_):
         """Capture the current screen and further process the image."""
         if not self.play:
+            self._last_time = None
             return
 
         if not self._center_region:
@@ -141,6 +144,10 @@ class MorseusCamera(Camera, WidgetMixin):
             self._center_region = tex.get_region(*region_args)
 
         # Load and further process region as PIL image.
+        now = time.time()
+        if settings.TIME_DELTA and self._last_time:
+            delta = now - self._last_time
+        self._last_time = now
         self.root.add_region(self._center_region, delta)
 
     def on_texture(self, *args, **kwargs):
