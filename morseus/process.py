@@ -69,7 +69,7 @@ class Decoder(object):
         return area
 
     @classmethod
-    def _examine_circles(cls, image):
+    def _examine_circles(cls, image, img_area):
         """Check if we have the usual spot & noise pattern."""
         areas = []
         width, height = image.size
@@ -100,7 +100,9 @@ class Decoder(object):
                 break
 
         # If we remain with the `noise`, then we have a recognized pattern.
-        return noise
+        # Also check if the spot isn't too tiny.
+        ratio = float(main_area) / img_area
+        return noise and ratio > settings.SPOT_MIN_RATIO
 
     def _add_image(self, image, delta, last_thread):
         """Add or discard new capture for analysing."""
@@ -109,13 +111,14 @@ class Decoder(object):
         # Convert to monochrome.
         mono_func = lambda pixel: pixel > self.MONO_THRESHOLD and 255
         image = image.point(mono_func, mode=self.MONO_MODE)
+        # Get image area and try to crop the extra space.
+        img_area = operator.mul(*image.size)
         if settings.BOUNDING_BOX:
             # Crop unnecessary void around the light object.
             box = image.getbbox()
             if box:
                 # Check if the new area isn't too small comparing to the
                 # original.
-                img_area = operator.mul(*image.size)
                 box_area = operator.mul(
                     *map(lambda pair: abs(box[pair[0]] - box[pair[1]]),
                          [(0, 2), (1, 3)])
@@ -130,7 +133,7 @@ class Decoder(object):
             light_dark = float(hist[-1]) / blacks
             signal = light_dark > self.LIGHT_DARK_RATIO
             if not signal and light_dark:
-                signal = self._examine_circles(image)
+                signal = self._examine_circles(image, img_area)
         else:
             signal = True
 

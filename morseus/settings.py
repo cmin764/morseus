@@ -16,6 +16,7 @@ LIGHT_DARK_RATIO = 1.0    # minimum light vs. dark quantity in an image
 BOUNDING_BOX = True    # crop empty areas when light is detected
 BOX_MIN_RATIO = 0.01    # minimum area ratio between box and source
 SPOT_NOISE_RATIO = 0.1    # maximum area ratio between any and the main spot
+SPOT_MIN_RATIO = BOX_MIN_RATIO / 2    # main spot minimum accepted area
 
 # Sub-area of interest within the whole capture.
 class AREA:
@@ -35,4 +36,4 @@ class CAMERA_PROVIDERS:
     OPENCV = "opencv"
 
     ENABLE = True
-    EXPLICIT = OPENCV
+    EXPLICIT = None

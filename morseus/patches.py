@@ -12,6 +12,7 @@ from morseus import settings
 PROVIDERS = settings.CAMERA_PROVIDERS
 CAMERAS = {
     "linux": PROVIDERS.OPENCV,
+    "macosx": PROVIDERS.AVFOUNDATION,
 }
 
 
