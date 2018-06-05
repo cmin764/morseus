@@ -1,0 +1,3 @@
+title=Morseus
+author=Cosmin Poieana
+orientation=portrait

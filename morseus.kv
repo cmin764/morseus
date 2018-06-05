@@ -1,0 +1,79 @@
+#:kivy 1.10.0
+
+
+<MorseusText@CapitalTextInput>:
+    size_hint: 0.4, 0.4
+    background_color: 0.8, 0.8, 0.8, 1
+    font_size: "30sp"
+
+
+<MorseusLayout>:
+    cols: 1
+
+    canvas:
+        Color:
+            rgb: 0.2, 0.2, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    TabbedPanel:
+        do_default_tab: False
+
+        MorseusTab:
+            id: receive_tab
+            text: "Receive"
+
+            GridLayout:
+                cols: 1
+
+                MorseusCamera:
+                    id: morseus_camera
+                    play: True
+                    resolution: 640, 480
+                    canvas.after:
+                        Color:
+                            rgba: 1, 1, 1, 0.5
+                        Line:
+                            rectangle:
+                                self.center_pos[0], self.center_pos[1], \
+                                self.center_size[0], self.center_size[1]
+                            width: 2
+                    on_pos: self.update_center()
+                    on_size: self.update_center()
+
+                MorseusText:
+                    readonly: True
+                    text: root.output_text
+
+                Button:
+                    size_hint: 0.2, 0.2
+                    text: "Reset"
+                    on_release: root.reset_receiver()
+
+        MorseusTab:
+            id: send_tab
+            text: "Send"
+
+            GridLayout:
+                cols: 1
+
+                Widget:
+                    canvas:
+                        Color:
+                            rgb: 0, 0, 0
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                MorseusText:
+                    hint_text: "YOUR TEXT HERE..."
+
+                Button:
+                    size_hint: 0.2, 0.2
+                    text: "Start"
+
+    Button:
+        size_hint: 0.1, 0.1
+        text: "Exit"
+        on_release: app.stop()
