@@ -12,6 +12,7 @@ import numpy
 from PIL import ImageFilter
 
 from morseus import settings
+from morseus.settings import LOGGING
 
 
 class Decoder(object):
@@ -25,13 +26,14 @@ class Decoder(object):
 
     MAX_SIGNALS = 128
 
-    def __init__(self):
+    def __init__(self, debug):
         # For identifying activity by absence of long silences.
         self._last_signals = collections.deque(maxlen=self.MAX_SIGNALS)
         # Last created thread (waiting purposes).
         self._last_thread = None
         # Morse translator.
-        self._translate = libmorse.translate_morse()
+        self._translate = libmorse.translate_morse(
+            use_logging=LOGGING.USE, debug=debug)
         # Initialize translator coroutine.
         self._translator = self._translate.next()[0]
         self._translate_lock = threading.Lock()
@@ -180,7 +182,7 @@ class Encoder(object):
 
     """Encode text into Morse signals."""
 
-    def __init__(self, text, signal_func, stop_event, decoder):
+    def __init__(self, text, signal_func, stop_event, decoder, debug):
         """Instantiate `Encoder` object with the mandatory arguments below.
 
         :param str text: text to be translated
@@ -195,7 +197,8 @@ class Encoder(object):
         self._stop_event = stop_event
         self._decoder = decoder
 
-        self._translator = libmorse.AlphabetTranslator()
+        self._translator = libmorse.AlphabetTranslator(
+            use_logging=LOGGING.USE, debug=debug)
 
     def start(self):
         """Starts the whole process as a blocking call until finish or

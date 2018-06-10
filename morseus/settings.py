@@ -36,4 +36,21 @@ class CAMERA_PROVIDERS:
     OPENCV = "opencv"
 
     ENABLE = True
+    IMPLICIT = {
+        "linux": OPENCV,
+        "macosx": AVFOUNDATION,
+    }
     EXPLICIT = None
+
+# Logging implicit options.
+class LOGGING:
+    USE = True    # use logging
+    DEBUG = True    # show debug messages
+
+    class FILE:    # use a logging file or not
+        IMPLICIT = {
+            "linux": True,
+            "macosx": True,
+            "android": False,
+        }
+        EXPLICIT = False

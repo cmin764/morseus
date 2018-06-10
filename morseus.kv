@@ -11,6 +11,8 @@
     cols: 1
     input_text: input_box.text
     camera_box_value: camera_box.value
+    adaptive_state: adaptive_switch.active
+    debug_state: debug_switch.active
 
     canvas:
         Color:
@@ -97,17 +99,40 @@
 
                     Label:
                         text: "Camera box"
+                        halign: "left"
 
-                    Slider:
-                        id: camera_box
-                        min: 10
-                        max: 50
-                        step: 1
-                        value: root.camera_box_value
-                        on_touch_up: morseus_camera.update_center(cache=False)
+                    GridLayout:
+                        rows: 1
+
+                        Slider:
+                            id: camera_box
+                            min: 10
+                            max: 50
+                            step: 1
+                            value: root.camera_box_value
+                            on_touch_up: morseus_camera.update_center(cache=False)
+                        Label:
+                            text: str(int(root.camera_box_value))
+
+                GridLayout:
+                    rows: 1
 
                     Label:
-                        text: str(int(root.camera_box_value))
+                        text: "Adaptive transmitter"
+                        halign: "left"
+                    Switch:
+                        id: adaptive_switch
+                        active: True
+
+                GridLayout:
+                    rows: 1
+
+                    Label:
+                        text: "Debug messages"
+                        halign: "left"
+                    Switch:
+                        id: debug_switch
+                        active: root.debug_state
 
     Button:
         size_hint: 0.1, 0.1

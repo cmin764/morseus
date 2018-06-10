@@ -20,6 +20,7 @@ from kivy.properties import (
 from kivy.uix.tabbedpanel import TabbedPanelItem
 
 from morseus import process, settings, utils
+from morseus.settings import LOGGING
 
 
 _MORSE_FPS = utils.calc_morse_fps()
@@ -73,14 +74,18 @@ class MorseusLayout(GridLayout):
     transmitter_color = ColorProperty([0] * 3)
     send_button_text = StringProperty(START)
     camera_box_value = NumericProperty()
+    adaptive_state = BooleanProperty()
+    debug_state = BooleanProperty()
 
     def __init__(self, *args, **kwargs):
         super(MorseusLayout, self).__init__(*args, **kwargs)
 
-        self._decoder = process.Decoder()
+        self.camera_box_value = int(settings.AREA.RATIO * 100)
+        self.debug_state = LOGGING.DEBUG
+
+        self._decoder = process.Decoder(self.debug_state)
         self._send_thread = None
         self._send_stop_tevent = threading.Event()
-        self.camera_box_value = int(settings.AREA.RATIO * 100)
 
         Clock.schedule_interval(self._update_output_text, MORSE_PERIOD)
 
@@ -101,7 +106,7 @@ class MorseusLayout(GridLayout):
         # Now signal the decoder to finish.
         self._decoder.close()
         # Recreate the decoding objects.
-        self._decoder = process.Decoder()
+        self._decoder = process.Decoder(self.debug_state)
         # And finally clear received text so far.
         self.output_text = ""
         # Now turn on back the camera.
@@ -124,7 +129,8 @@ class MorseusLayout(GridLayout):
             self.input_text,
             signal_func,
             self._send_stop_tevent,
-            self._decoder
+            self._decoder,
+            self.debug_state
         )
         _encoder.start()
         # The encoder just finished the job on its own or by being stopped.

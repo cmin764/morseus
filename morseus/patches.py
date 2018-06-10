@@ -1,6 +1,7 @@
 """Patch library bad behavior."""
 
 
+import libmorse
 from kivy import utils as kivy_utils
 from kivy.clock import Clock
 from kivy.core import camera as core_camera, core_select_lib
@@ -9,19 +10,17 @@ from kivy.uix import camera as uix_camera
 from morseus import settings
 
 
-PROVIDERS = settings.CAMERA_PROVIDERS
-CAMERAS = {
-    "linux": PROVIDERS.OPENCV,
-    "macosx": PROVIDERS.AVFOUNDATION,
-}
+CAM = settings.CAMERA_PROVIDERS
+LOG = settings.LOGGING
+PLATFORM = kivy_utils.platform
 
 
-def patch_camera(set_provider=PROVIDERS.EXPLICIT):
+def patch_camera(set_provider=CAM.EXPLICIT):
     """Choose a predefined camera provider for some platforms."""
     CoreCamera = core_camera.Camera
-    set_provider = set_provider or CAMERAS.get(kivy_utils.platform)
+    set_provider = set_provider or CAM.IMPLICIT.get(PLATFORM)
 
-    if PROVIDERS.ENABLE and set_provider:
+    if CAM.ENABLE and set_provider:
         for provider in core_camera.providers:
             if set_provider == provider[0]:
                 core_camera.providers = (provider,)
@@ -48,6 +47,17 @@ def patch_camera(set_provider=PROVIDERS.EXPLICIT):
     uix_camera.CoreCamera = core_camera.Camera
 
 
-def patch_all(camera=True):
+def patch_libmorse(logfile=LOG.FILE.EXPLICIT):
+    if logfile is None:
+        logfile = LOG.FILE.IMPLICIT.get(PLATFORM)
+    # Do not take into account `True` or `None`.
+    if logfile is False:
+        # We deliberately do not want to log into files.
+        libmorse.settings.LOGFILE = None
+
+
+def patch_all(camera=True, libmorse=True):
     if camera:
         patch_camera()
+    if libmorse:
+        patch_libmorse()
