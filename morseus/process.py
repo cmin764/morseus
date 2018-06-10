@@ -27,6 +27,10 @@ class Decoder(object):
     MAX_SIGNALS = 128
 
     def __init__(self, debug):
+        """Instantiate `Decoder` object with the arguments below.
+
+        :param bool debug: show debug messages or not
+        """
         # For identifying activity by absence of long silences.
         self._last_signals = collections.deque(maxlen=self.MAX_SIGNALS)
         # Last created thread (waiting purposes).
@@ -191,6 +195,7 @@ class Encoder(object):
         :param stop_event: threading event which signals when to stop the
             processing & interpretation
         :param decoder: Decoder object used to read latest learnt metrics
+        :param bool debug: show debug messages or not
         """
         self._text = text
         self._signal_func = signal_func
