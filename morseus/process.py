@@ -4,6 +4,7 @@
 import collections
 import operator
 import threading
+import time
 from Queue import Queue
 
 import libmorse
@@ -173,3 +174,48 @@ class Decoder(object):
         self._translator.wait()
         self._translator.close()
         self._last_signals.clear()
+
+
+class Encoder(object):
+
+    """Encode text into Morse signals."""
+
+    def __init__(self, text, signal_func, stop_event, decoder):
+        """Instantiate `Encoder` object with the mandatory arguments below.
+
+        :param str text: text to be translated
+        :param signal_func: function that is called for each new state of the
+            signal display
+        :param stop_event: threading event which signals when to stop the
+            processing & interpretation
+        :param decoder: Decoder object used to read latest learnt metrics
+        """
+        self._text = text
+        self._signal_func = signal_func
+        self._stop_event = stop_event
+        self._decoder = decoder
+
+        self._translator = libmorse.AlphabetTranslator()
+
+    def start(self):
+        """Starts the whole process as a blocking call until finish or
+        stopped.
+        """
+        # Send and process all characters at once.
+        items = list(self._text.upper())
+        for item in items:
+            self._translator.put(item)
+        _, result = libmorse.get_translator_results(
+            self._translator, force_wait=True
+        )
+        self._translator.close()
+
+        # Now send these resulted signals according to their duration.
+        for state, delta in result:
+            self._signal_func(state)
+            time.sleep(delta / settings.SECOND)
+            if self._stop_event.is_set():
+                break
+
+        # Every time we're ending with a silence.
+        self._signal_func(False)
