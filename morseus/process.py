@@ -172,6 +172,11 @@ class Decoder(object):
             all_letters.extend(letters)
         return "".join(all_letters)
 
+    def get_learnt_metrics(self):
+        """Returns learnt translator `unit` and `config`."""
+        trans = self._translator
+        return trans.unit, trans.config
+
     def close(self):
         """Close the translator and free resources."""
         # Wait for the last started thread to finish (and all before it).
@@ -186,7 +191,8 @@ class Encoder(object):
 
     """Encode text into Morse signals."""
 
-    def __init__(self, text, signal_func, stop_event, decoder, debug):
+    def __init__(self, text, signal_func, stop_event, decoder, debug,
+                 adaptive):
         """Instantiate `Encoder` object with the mandatory arguments below.
 
         :param str text: text to be translated
@@ -196,14 +202,24 @@ class Encoder(object):
             processing & interpretation
         :param decoder: Decoder object used to read latest learnt metrics
         :param bool debug: show debug messages or not
+        :param bool adaptive: "talk" in the same way we "listened"
         """
         self._text = text
         self._signal_func = signal_func
         self._stop_event = stop_event
         self._decoder = decoder
 
+        # Create translator object for encoding text into Morse code quanta.
         self._translator = libmorse.AlphabetTranslator(
             use_logging=LOGGING.USE, debug=debug)
+        # Use learnt unit and ratios instead of the default hardcoded ones.
+        unit, config = decoder.get_learnt_metrics()
+        if unit:
+            # Use it when we have a learnt `unit` only.
+            self._translator.unit = unit
+        # We're having ratios no matter what, because we start with a
+        # predefined standard set (which should be followed by any sender).
+        self._translator.update_ratios(config)
 
     def start(self):
         """Starts the whole process as a blocking call until finish or

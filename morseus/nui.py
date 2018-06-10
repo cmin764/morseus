@@ -130,7 +130,8 @@ class MorseusLayout(GridLayout):
             signal_func,
             self._send_stop_tevent,
             self._decoder,
-            self.debug_state
+            self.debug_state,
+            self.adaptive_state
         )
         _encoder.start()
         # The encoder just finished the job on its own or by being stopped.
