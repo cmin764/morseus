@@ -9,6 +9,10 @@
 
 <MorseusLayout>:
     cols: 1
+    input_text: input_box.text
+    camera_box_value: camera_box.value
+    adaptive_state: adaptive_switch.active
+    debug_state: debug_switch.active
 
     canvas:
         Color:
@@ -61,17 +65,74 @@
                 Widget:
                     canvas:
                         Color:
-                            rgb: 0, 0, 0
+                            rgb: root.transmitter_color
                         Rectangle:
                             pos: self.pos
                             size: self.size
 
                 MorseusText:
+                    id: input_box
                     hint_text: "YOUR TEXT HERE..."
+                    text: root.input_text
 
-                Button:
+                GridLayout:
+                    rows: 1
                     size_hint: 0.2, 0.2
-                    text: "Start"
+
+                    Button:
+                        text: root.send_button_text
+                        on_release: root.toggle_send_button()
+
+                    Button:
+                        text: "Clear"
+                        on_release: root.input_text = ""
+
+        MorseusTab:
+            id: options_tab
+            text: "Options"
+
+            GridLayout:
+                cols: 1
+
+                GridLayout:
+                    rows: 1
+
+                    Label:
+                        text: "Camera box"
+                        halign: "left"
+
+                    GridLayout:
+                        rows: 1
+
+                        Slider:
+                            id: camera_box
+                            min: 10
+                            max: 50
+                            step: 1
+                            value: root.camera_box_value
+                            on_touch_up: morseus_camera.update_center(cache=False)
+                        Label:
+                            text: str(int(root.camera_box_value))
+
+                GridLayout:
+                    rows: 1
+
+                    Label:
+                        text: "Adaptive transmitter"
+                        halign: "left"
+                    Switch:
+                        id: adaptive_switch
+                        active: True
+
+                GridLayout:
+                    rows: 1
+
+                    Label:
+                        text: "Debug messages"
+                        halign: "left"
+                    Switch:
+                        id: debug_switch
+                        active: root.debug_state
 
     Button:
         size_hint: 0.1, 0.1
