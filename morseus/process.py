@@ -213,13 +213,15 @@ class Encoder(object):
         self._translator = libmorse.AlphabetTranslator(
             use_logging=LOGGING.USE, debug=debug)
         # Use learnt unit and ratios instead of the default hardcoded ones.
-        unit, config = decoder.get_learnt_metrics()
-        if unit:
-            # Use it when we have a learnt `unit` only.
-            self._translator.unit = unit
-        # We're having ratios no matter what, because we start with a
-        # predefined standard set (which should be followed by any sender).
-        self._translator.update_ratios(config)
+        if adaptive:
+            unit, config = decoder.get_learnt_metrics()
+            if unit:
+                # Use it when we have a learnt `unit` only.
+                self._translator.unit = unit
+            # We're having ratios no matter what, because we start with a
+            # predefined standard set (which should be followed by any
+            # sender as closest as it can).
+            self._translator.update_ratios(config)
 
     def start(self):
         """Starts the whole process as a blocking call until finish or
