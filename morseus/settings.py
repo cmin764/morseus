@@ -11,7 +11,8 @@ MAX_FPS = 30    # maximum number of frames per second supported
 FPS_FACTOR = 3    # multiplied with the lowest computed FPS value
 TIME_DELTA = False    # use own computed time difference
 
-MONO_THRESHOLD = 250    # pixels above this are considered white
+# Pixels above this threshold are considered white.
+MONO_THRESHOLD = 250
 LIGHT_DARK_RATIO = 1.0    # minimum light vs. dark quantity in an image
 BOUNDING_BOX = True    # crop empty areas when light is detected
 BOX_MIN_RATIO = 0.01    # minimum area ratio between box and source
