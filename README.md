@@ -2,6 +2,8 @@
 
 *Morse signals translator.*
 
+![Morseus Receive Example](artwork/morseus.gif)
+
 We believe in the importance of communication, especially when you're in great
 need and conventional channels are not available, but you can rely on one of
 the simplest (and fastest at the same time) information carriers, *light*.
@@ -59,6 +61,9 @@ $ git clone https://github.com/cmin764/morseus.git
 $ cd morseus
 $ ./setup.sh    # setup.bat on Windows (use `sudo` on Linux)
 ```
+
+Note that Morseus relies on [*libmorse*](https://github.com/cmin764/libmorse)
+library which is installed automatically by `pip` using the requirements file.
 
 
 ## Usage
@@ -158,6 +163,8 @@ Enter http://localhost:8000 for viewing the documentation.
 
 * Homepage: https://cosminpoieana.wordpress.com/
 * Documentation: https://morseus.readthedocs.io/
+* Paper: https://goo.gl/H6JfTw
+* Library: https://github.com/cmin764/libmorse
 * Source: https://github.com/cmin764/morseus.git
 * License: MIT
 * Authors:

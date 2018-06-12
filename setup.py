@@ -78,7 +78,7 @@ USE_SOURCE = not LINUX or LOCAL or (VENV and not PIP)
 
 setup(
     name="morseus",
-    version="0.4.0",
+    version="0.4.1",
     description="Morse signals translator.",
     long_description=read("README.md") or "",
     url="https://github.com/cmin764/morseus",
