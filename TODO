@@ -1,5 +1,2 @@
-- adapt mono threshold according to day/night environment
-- detect long sleeps (and pause camera; begin at first light)
-
-- add documentation: rst -> lex -> pdf
+- use flashes for signals sending on mobile device
 - add camera support for android (and android deployment)

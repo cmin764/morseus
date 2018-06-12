@@ -1,3 +1,5 @@
 Kivy>=1.10.0
+Pillow>=5.1.0
+numpy>=1.14.3
 
 git+https://github.com/cmin764/libmorse.git

@@ -31,8 +31,6 @@ class Decoder(object):
 
         :param bool debug: show debug messages or not
         """
-        # For identifying activity by absence of long silences.
-        self._last_signals = collections.deque(maxlen=self.MAX_SIGNALS)
         # Last created thread (waiting purposes).
         self._last_thread = None
         # Morse translator.
@@ -184,7 +182,6 @@ class Decoder(object):
             self._last_thread.join()
         self._translator.wait()
         self._translator.close()
-        self._last_signals.clear()
 
 
 class Encoder(object):
