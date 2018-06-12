@@ -21,7 +21,7 @@ in such a way that the sender will perfectly understand your message.
 
 ## Installation
 
-You can download prebuilt binary executables for your platform from below:
+You can download prebuilt binary executables for your platform below:
 
 - Mac: *\<coming soon\>*
 - Linux: *\<coming soon\>*
@@ -163,7 +163,7 @@ Enter http://localhost:8000 for viewing the documentation.
 
 * Homepage: https://cosminpoieana.wordpress.com/
 * Documentation: https://morseus.readthedocs.io/
-* Paper: https://goo.gl/H6JfTw
+* Paper (RO): https://goo.gl/H6JfTw
 * Library: https://github.com/cmin764/libmorse
 * Source: https://github.com/cmin764/morseus.git
 * License: MIT
