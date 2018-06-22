@@ -69,16 +69,16 @@ def get_data_files(source, files, use_source=False):
     return destination, paths
 
 
-LINUX = "linux" in sys.platform
+UNIX = bool(re.search(r"linux|darwin", sys.platform))
 VENV = is_venv()
 PIP = "--single-version-externally-managed" in sys.argv
 LOCAL = PIP and any(map(lambda arg: arg.startswith("--home"), sys.argv))
-USE_SOURCE = not LINUX or LOCAL or (VENV and not PIP)
+USE_SOURCE = not UNIX or LOCAL or (VENV and not PIP)
 
 
 setup(
     name="morseus",
-    version="0.4.2",
+    version="0.4.3",
     description="Morse signals translator.",
     long_description=read("README.md") or "",
     url="https://github.com/cmin764/morseus",
