@@ -2,10 +2,10 @@
 
 block_cipher = None
 
-repos = "/Users/cmin/Repos/"
+root = "/Users/cmin/Repos/"
 
 a = Analysis(['main.py'],
-             pathex=[repos + "morseus"],
+             pathex=[root + "morseus"],
              binaries=[],
              datas=[],
              hiddenimports=['scipy._lib.messagestream'],
@@ -26,9 +26,9 @@ exe = EXE(pyz,
           upx=True,
           console=False )
 coll = COLLECT(exe,
-               Tree(repos + "morseus-clone/"),
-               Tree(repos + "libmorse/"),
-               Tree(repos + "morseus/deps/dylibs/"),
+               Tree(root + "morseus-min/"),
+               Tree(root + "libmorse/"),
+               Tree(root + "morseus/deps/dylibs/"),
                a.binaries,
                a.zipfiles,
                a.datas,
