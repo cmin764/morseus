@@ -1,6 +1,8 @@
 """Morseus default settings and constants."""
 
 
+import os
+
 from libmorse import UNIT
 
 
@@ -55,3 +57,5 @@ class LOGGING:
             "android": False,
         }
         EXPLICIT = False
+
+ICON = os.path.join("artwork", "morseus.ico")

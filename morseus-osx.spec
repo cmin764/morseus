@@ -2,9 +2,10 @@
 
 block_cipher = None
 
+repos = "/Users/cmin/Repos/"
 
 a = Analysis(['main.py'],
-             pathex=['/Users/cmin/Repos/morseus'],
+             pathex=[repos + "morseus"],
              binaries=[],
              datas=[],
              hiddenimports=['scipy._lib.messagestream'],
@@ -19,19 +20,22 @@ pyz = PYZ(a.pure, a.zipped_data,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='morseus',
+          name='Morseus',
           debug=False,
           strip=False,
           upx=True,
           console=False )
-coll = COLLECT(exe, #Tree('/Users/cmin/Repos/morseus/'),
+coll = COLLECT(exe,
+               Tree(repos + "morseus-clone/"),
+               Tree(repos + "libmorse/"),
+               Tree(repos + "morseus/deps/dylibs/"),
                a.binaries,
                a.zipfiles,
                a.datas,
                strip=False,
                upx=True,
-               name='morseus')
+               name='Morseus')
 app = BUNDLE(coll,
-             name='morseus.app',
-             icon=None,
+             name='Morseus.app',
+             icon="artwork/morseus.ico",
              bundle_identifier=None)

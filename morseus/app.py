@@ -3,12 +3,14 @@
 
 from kivy.app import App
 
+from morseus import settings
 from morseus.nui import MorseusLayout
 
 
 class Morseus(App):
 
     def build(self):
+        self.icon = settings.ICON
         return MorseusLayout()
 
     def on_stop(self):
