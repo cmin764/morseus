@@ -58,4 +58,11 @@ class LOGGING:
         }
         EXPLICIT = False
 
-ICON = os.path.join("artwork", "morseus.ico")
+# Project directory (package parent).
+PROJECT = os.path.normpath(
+    os.path.join(
+        os.path.dirname(__file__),
+        os.path.pardir
+    )
+)
+ICON = os.path.join(PROJECT, "artwork", "morseus.ico")
