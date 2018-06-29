@@ -40,7 +40,7 @@ class CAMERA_PROVIDERS:
 
     ENABLE = True
     IMPLICIT = {
-        "linux": OPENCV,
+        "linux": GI,
         "macosx": AVFOUNDATION,
     }
     EXPLICIT = None
