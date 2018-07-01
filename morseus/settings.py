@@ -42,6 +42,7 @@ class CAMERA_PROVIDERS:
     IMPLICIT = {
         "linux": OPENCV,
         "macosx": AVFOUNDATION,
+        "win": OPENCV,
     }
     EXPLICIT = None
 
@@ -54,9 +55,10 @@ class LOGGING:
         IMPLICIT = {
             "linux": True,
             "macosx": True,
+            "win": True,
             "android": False,
         }
-        EXPLICIT = False
+        EXPLICIT = None
 
 # Project directory (package parent).
 PROJECT = os.path.normpath(
