@@ -21,12 +21,11 @@ in such a way that the sender will perfectly understand your message.
 
 ## Installation
 
-You can download prebuilt binary executables for your platform below:
+You can download prebuilt binary executables for your platform by accessing
+the links below:
 
-- Mac: *\<coming soon\>*
-- Linux: *\<coming soon\>*
-- Windows: *\<coming soon\>*
-- iOS/Android: App/Play Store
+- Mac, Linux, Windows: https://goo.gl/BUc9kx
+- iOS, Android: App/Play Store
 
 
 #### Manual install
@@ -64,6 +63,19 @@ $ ./setup.sh    # setup.bat on Windows (use `sudo` on Linux)
 
 Note that Morseus relies on [*libmorse*](https://github.com/cmin764/libmorse)
 library which is installed automatically by `pip` using the requirements file.
+If this doesn't install as it should, please clone the repository and install
+the package by running `./setup.sh`.
+
+You'll also need to have *Kivy* fully and correctly installed, using a proper
+version of *Cython*. For doing that, we recommend uninstalling any previous
+version of kivy and installing the latest one here:
+`pip install git+https://github.com/kivy/kivy.git@master`, but first, just
+figure out what's the version you're installing and use the appropriate Cython
+described [here](https://kivy.org/docs/installation/deps-cython.html).
+Depending on the actual configuration, you may be needing other dependencies
+as well, like *OpenCV* or *GStreamer*. For more information on installing
+kivy, please consult the following
+[page](https://kivy.org/docs/installation/installation.html#).
 
 
 ## Usage

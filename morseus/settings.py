@@ -1,6 +1,8 @@
 """Morseus default settings and constants."""
 
 
+import os
+
 from libmorse import UNIT
 
 
@@ -40,6 +42,7 @@ class CAMERA_PROVIDERS:
     IMPLICIT = {
         "linux": OPENCV,
         "macosx": AVFOUNDATION,
+        "win": OPENCV,
     }
     EXPLICIT = None
 
@@ -52,6 +55,16 @@ class LOGGING:
         IMPLICIT = {
             "linux": True,
             "macosx": True,
+            "win": True,
             "android": False,
         }
-        EXPLICIT = False
+        EXPLICIT = None
+
+# Project directory (package parent).
+PROJECT = os.path.normpath(
+    os.path.join(
+        os.path.dirname(__file__),
+        os.path.pardir
+    )
+)
+ICON = os.path.join(PROJECT, "artwork", "morseus.ico")
