@@ -68,7 +68,7 @@ the package by running `./setup.sh`.
 
 You'll also need to have *Kivy* fully and correctly installed, using a proper
 version of *Cython*. For doing that, we recommend uninstalling any previous
-version of kivy and installing the latest one here:
+version of kivy and installing the latest one with:
 `pip install git+https://github.com/kivy/kivy.git@master`, but first, just
 figure out what's the version you're installing and use the appropriate Cython
 described [here](https://kivy.org/docs/installation/deps-cython.html).
@@ -173,7 +173,7 @@ Enter http://localhost:8000 for viewing the documentation.
 
 ----
 
-* Homepage: https://cosminpoieana.wordpress.com/
+* Homepage: https://cosminpoieana.wordpress.com/category/morseus/
 * Documentation: https://morseus.readthedocs.io/
 * Paper (RO): https://goo.gl/H6JfTw
 * Library: https://github.com/cmin764/libmorse
