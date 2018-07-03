@@ -173,7 +173,8 @@ Enter http://localhost:8000 for viewing the documentation.
 
 ----
 
-* Homepage: https://cosminpoieana.wordpress.com/category/morseus/
+* Homepage: https://cmin764.github.io/morseus/
+* Blog: https://cosminpoieana.wordpress.com/category/morseus/
 * Documentation: https://morseus.readthedocs.io/
 * Paper (RO): https://goo.gl/H6JfTw
 * Library: https://github.com/cmin764/libmorse
