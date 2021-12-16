@@ -174,11 +174,11 @@ Enter http://localhost:8000 for viewing the documentation.
 ----
 
 * Homepage: https://cmin764.github.io/morseus/
-* Blog: https://cosminpoieana.wordpress.com/category/morseus/
-* Documentation: https://morseus.readthedocs.io/
+* Blog: https://cosminslife.wordpress.com/2018/07/03/morseus-released/
+* Documentation: https://morseus.readthedocs.io/en/latest/
 * Paper (RO): https://goo.gl/H6JfTw
 * Library: https://github.com/cmin764/libmorse
-* Source: https://github.com/cmin764/morseus.git
+* Source: https://github.com/cmin764/morseus
 * License: MIT
 * Authors:
     + Cosmin Poieana <cmin764@gmail.com>
